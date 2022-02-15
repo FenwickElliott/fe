@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"runtime"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -24,6 +26,22 @@ func main() {
 	}})
 	rootCmd.AddCommand(&cobra.Command{Use: "uuid", Run: func(cmd *cobra.Command, args []string) {
 		log.Println(uuid.New())
+	}})
+	rootCmd.AddCommand(&cobra.Command{Use: "lasthour", Run: func(cmd *cobra.Command, args []string) {
+		t := time.Now()
+		log.Printf("%d %d", t.Add(-time.Hour).Unix(), t.Unix())
+	}})
+	rootCmd.AddCommand(&cobra.Command{Use: "unix", Run: func(cmd *cobra.Command, args []string) {
+		switch len(args) {
+		case 0:
+			log.Println(time.Now().Unix())
+		case 1:
+			n, err := strconv.ParseInt(args[0], 10, 64)
+			fatal(err)
+			log.Println(time.Unix(n, 0))
+		default:
+			log.Fatal("epoc command accepts 0 or 1 arguments")
+		}
 	}})
 
 	err := rootCmd.Execute()
