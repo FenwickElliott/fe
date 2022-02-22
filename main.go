@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -67,6 +69,7 @@ func main() {
 func fatal(err error) {
 	if err != nil {
 		_, f, l, _ := runtime.Caller(1)
-		log.Fatalf("\n!!!!!  FATAL ERROR  !!!!!\n%s:%d: %s\n¡¡¡¡¡  FATAL ERROR  ¡¡¡¡¡", f, l, err)
+		fmt.Printf("FATAL ERROR:\n%s:%d %s", f, l, err)
+		os.Exit(-1)
 	}
 }
