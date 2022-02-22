@@ -43,6 +43,22 @@ func main() {
 			log.Fatal("epoc command accepts 0 or 1 arguments")
 		}
 	}})
+	rootCmd.AddCommand(&cobra.Command{Use: "human", Args: cobra.ExactArgs(1), Run: func(cmd *cobra.Command, args []string) {
+		arg := args[0]
+
+		raw, err := strconv.Atoi(arg)
+		fatal(err)
+
+		mutated := raw
+		for _, prefix := range []string{"", "k", "M", "G", "T", "P"} {
+			if mutated < 1024 {
+				log.Printf("%d B -> %d %sB", raw, mutated, prefix)
+				return
+			}
+			mutated = mutated / 1024
+		}
+		log.Fatalf("sorry %d, is out of bounds (we only cover petabytes)", raw)
+	}})
 
 	err := rootCmd.Execute()
 	fatal(err)
