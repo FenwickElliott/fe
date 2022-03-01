@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"runtime"
 	"strconv"
@@ -60,6 +61,24 @@ func main() {
 			mutated = mutated / 1024
 		}
 		log.Fatalf("sorry %d, is out of bounds (we only cover petabytes)", raw)
+	}})
+
+	rootCmd.AddCommand(&cobra.Command{Use: "unescape", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			escaped, err := url.QueryUnescape(raw)
+			if err != nil {
+				log.Printf("%s -> %s", raw, err)
+			}
+			log.Printf("%s -> %s", raw, escaped)
+
+		}
+	}})
+
+	rootCmd.AddCommand(&cobra.Command{Use: "escape", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			log.Printf("%s -> %s", raw, url.QueryEscape(raw))
+
+		}
 	}})
 
 	err := rootCmd.Execute()
