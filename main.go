@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/martinlindhe/base36"
 	"github.com/spf13/cobra"
 )
 
@@ -81,6 +82,14 @@ func main() {
 		}
 	}})
 
+	rootCmd.AddCommand(&cobra.Command{Use: "kt", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			tok := strings.Split(raw, "-")
+			t := base36.Decode(tok[0])
+			log.Printf("%s -> %s", raw, time.Unix(int64(t/1000), 0))
+		}
+	}})
+
 	err := rootCmd.Execute()
 	fatal(err)
 }
@@ -88,7 +97,7 @@ func main() {
 func fatal(err error) {
 	if err != nil {
 		_, f, l, _ := runtime.Caller(1)
-		fmt.Printf("FATAL ERROR:\n%s:%d %s", f, l, err)
+		fmt.Printf("%s:%d %s", f, l, err)
 		os.Exit(-1)
 	}
 }

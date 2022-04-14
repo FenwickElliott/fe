@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/google/uuid v1.3.0
+	github.com/martinlindhe/base36 v1.1.0
 	github.com/spf13/cobra v1.3.0
 )
 
