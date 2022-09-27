@@ -90,6 +90,12 @@ func main() {
 		}
 	}})
 
+	rootCmd.AddCommand(&cobra.Command{Use: "charcount", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			log.Printf("raw -> %d", len(raw))
+		}
+	}})
+
 	err := rootCmd.Execute()
 	fatal(err)
 }
