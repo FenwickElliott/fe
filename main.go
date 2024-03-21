@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/martinlindhe/base36"
+	"github.com/oklog/ulid/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -31,8 +32,13 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{Use: "uuid", Run: func(cmd *cobra.Command, args []string) {
 		log.Println(uuid.New())
 	}})
+	rootCmd.AddCommand(&cobra.Command{Use: "ulid", Run: func(cmd *cobra.Command, args []string) {
+		log.Println(ulid.Make())
+	}})
 	rootCmd.AddCommand(&cobra.Command{Use: "lasthour", Run: func(cmd *cobra.Command, args []string) {
 		t := time.Now()
+		log.Printf("lasthour: %s", t.Add(-time.Hour).Format(time.RFC1123))
+		log.Printf("now: %s", t)
 		log.Printf("%d %d", t.Add(-time.Hour).Unix(), t.Unix())
 	}})
 	rootCmd.AddCommand(&cobra.Command{Use: "unix", Run: func(cmd *cobra.Command, args []string) {
@@ -78,7 +84,17 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{Use: "escape", Run: func(cmd *cobra.Command, args []string) {
 		for _, raw := range args {
 			log.Printf("%s -> %s", raw, url.QueryEscape(raw))
+		}
+	}})
 
+	rootCmd.AddCommand(&cobra.Command{Use: "to_yaml", Run: func(cmd *cobra.Command, args []string) {
+		log.Printf("%s ->\n[\"%s\"]", args, strings.Join(args, `", "`))
+	}})
+
+	rootCmd.AddCommand(&cobra.Command{Use: "to_string", Run: func(cmd *cobra.Command, args []string) {
+		// log.Printf("%s ->\n", args, strings.Trim(strings.Join(args)))
+		for i, v := range args {
+			log.Println(i, v)
 		}
 	}})
 
@@ -93,6 +109,16 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{Use: "charcount", Run: func(cmd *cobra.Command, args []string) {
 		for _, raw := range args {
 			log.Printf("raw -> %d", len(raw))
+		}
+	}})
+
+	rootCmd.AddCommand(&cobra.Command{Use: "sqlGo2Cli", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			u, err := url.Parse(raw)
+			fatal(err)
+
+			log.Println(u.User)
+			// log.Printf("raw -> %d", len(raw))
 		}
 	}})
 
