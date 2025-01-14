@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/url"
@@ -106,9 +107,27 @@ func main() {
 		}
 	}})
 
+	base64CMD := &cobra.Command{Use: "base64"}
+	base64CMD.AddCommand(&cobra.Command{Use: "encode", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			log.Printf("%s -> %s", raw, base64.StdEncoding.EncodeToString([]byte(raw)))
+		}
+	}})
+	base64CMD.AddCommand(&cobra.Command{Use: "decode", Run: func(cmd *cobra.Command, args []string) {
+		for _, raw := range args {
+			res, err := base64.StdEncoding.DecodeString(raw)
+			if err != nil {
+				log.Printf("%s -> error: %v", raw, err)
+			}
+			log.Printf("%s -> %s", raw, res)
+		}
+	}})
+
+	rootCmd.AddCommand(base64CMD)
+
 	rootCmd.AddCommand(&cobra.Command{Use: "charcount", Run: func(cmd *cobra.Command, args []string) {
 		for _, raw := range args {
-			log.Printf("raw -> %d", len(raw))
+			log.Printf("%s -> %d", raw, len(raw))
 		}
 	}})
 
